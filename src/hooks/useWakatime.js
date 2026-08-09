@@ -1,23 +1,36 @@
 import { useState, useEffect } from 'react';
-import { fetchWakatimeStats } from '../utils/api';
+import { fetchWakaStats, fetchWakaSummaries } from '../utils/api';
 
-export function useWakatime() {
+export function useWakaTime(range = 'last_7_days') {
   const [stats, setStats] = useState(null);
+  const [summaries, setSummaries] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const key = import.meta.env.VITE_WAKATIME_KEY;
 
   useEffect(() => {
     if (!key) {
       setLoading(false);
+      setError('WakaTime key not configured');
       return;
     }
-    fetchWakatimeStats(key)
-      .then((res) => {
-        setStats(res.data);
+    setLoading(true);
+    setError(null);
+    Promise.all([
+      fetchWakaStats(range),
+      fetchWakaSummaries(range),
+    ])
+      .then(([statsData, summariesData]) => {
+        setStats(statsData);
+        setSummaries(summariesData);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
-  }, [key]);
+      .catch(err => {
+        console.error(err);
+        setError(err.message);
+        setLoading(false);
+      });
+  }, [range, key]);
 
-  return { stats, loading };
+  return { stats, summaries, loading, error };
 }

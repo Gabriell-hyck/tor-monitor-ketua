@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { quotes } from '../../data/quotes';
+import { quotes } from '../../utils/constants';
 
 function getRandomQuote() {
   return quotes[Math.floor(Math.random() * quotes.length)];

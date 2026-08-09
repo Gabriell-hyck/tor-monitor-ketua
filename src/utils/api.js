@@ -1,5 +1,24 @@
 const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
+const WAKATIME_KEY = import.meta.env.VITE_WAKATIME_KEY;
 
+// ---------------- GITHUB REST ----------------
+export async function fetchUser(username) {
+  const res = await fetch(`https://api.github.com/users/${username}`, {
+    headers: { Authorization: `Bearer ${GITHUB_TOKEN}` }
+  });
+  if (!res.ok) throw new Error(`GitHub user fetch failed: ${res.status}`);
+  return res.json();
+}
+
+export async function fetchRepos(username) {
+  const res = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=20`, {
+    headers: { Authorization: `Bearer ${GITHUB_TOKEN}` }
+  });
+  if (!res.ok) throw new Error(`GitHub repos fetch failed: ${res.status}`);
+  return res.json();
+}
+
+// ---------------- GITHUB GRAPHQL (contributions) ----------------
 export async function fetchGitHubGraphQL(query, variables = {}) {
   const res = await fetch('https://api.github.com/graphql', {
     method: 'POST',
@@ -9,37 +28,46 @@ export async function fetchGitHubGraphQL(query, variables = {}) {
     },
     body: JSON.stringify({ query, variables }),
   });
-  if (!res.ok) throw new Error('GitHub API error');
+  if (!res.ok) throw new Error('GitHub GraphQL error');
   return res.json();
 }
 
-export async function fetchWakatimeStats(key) {
-  const res = await fetch(
-    `https://wakatime.com/api/v1/users/current/stats/last_7_days?api_key=${key}`
-  );
-  if (!res.ok) throw new Error('Wakatime API error');
-  return res.json();
+export async function fetchContributions(username) {
+  const query = `
+    query($login: String!) {
+      user(login: $login) {
+        contributionsCollection {
+          contributionCalendar {
+            totalContributions
+            weeks {
+              contributionDays {
+                contributionCount
+                date
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+  const { data } = await fetchGitHubGraphQL(query, { login: username });
+  return data.user.contributionsCollection.contributionCalendar;
 }
 
-export async function fetchSpotifyNowPlaying(accessToken) {
-  const res = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
-    headers: { Authorization: `Bearer ${accessToken}` },
+// ---------------- WAKATIME REST ----------------
+async function wakaFetch(endpoint) {
+  const res = await fetch(`https://wakatime.com/api/v1${endpoint}`, {
+    headers: { Authorization: `Basic ${btoa(WAKATIME_KEY)}` }
   });
-  if (res.status === 204) return null;
-  return res.json();
+  if (!res.ok) throw new Error(`WakaTime fetch failed: ${res.status}`);
+  const json = await res.json();
+  return json.data;
 }
 
-export async function getSpotifyAccessToken(refreshToken, clientId, clientSecret) {
-  const res = await fetch('https://accounts.spotify.com/api/token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: 'Basic ' + btoa(`${clientId}:${clientSecret}`),
-    },
-    body: new URLSearchParams({
-      grant_type: 'refresh_token',
-      refresh_token: refreshToken,
-    }),
-  });
-  return res.json();
+export async function fetchWakaStats(range = 'last_7_days') {
+  return wakaFetch(`/users/current/stats/${range}`);
+}
+
+export async function fetchWakaSummaries(range = 'last_7_days') {
+  return wakaFetch(`/users/current/summaries?range=${range}`);
 }

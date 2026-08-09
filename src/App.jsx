@@ -1,6 +1,8 @@
 import { useState, useCallback } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
+import { GitHubProvider } from './context/GitHubContext';
+import { TasksProvider } from './context/TasksContext';
 import Layout from './components/layout/Layout';
 import SplashScreen from './components/home/SplashScreen';
 import HomePage from './pages/HomePage';
@@ -18,17 +20,21 @@ function App() {
       {showSplash ? (
         <SplashScreen onFinish={finishSplash} />
       ) : (
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<HomePage />} />
-              <Route path="repos" element={<ReposPage />} />
-              <Route path="analytics" element={<AnalyticsPage />} />
-              <Route path="profile" element={<ProfilePage />} />
-              <Route path="tasks" element={<TasksPage />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
+        <GitHubProvider>
+          <TasksProvider>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Layout />}>
+                  <Route index element={<HomePage />} />
+                  <Route path="repos" element={<ReposPage />} />
+                  <Route path="analytics" element={<AnalyticsPage />} />
+                  <Route path="profile" element={<ProfilePage />} />
+                  <Route path="tasks" element={<TasksPage />} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </TasksProvider>
+        </GitHubProvider>
       )}
     </AppProvider>
   );
