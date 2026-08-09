@@ -79,20 +79,3 @@ export async function fetchWakaStats(range = 'last_7_days') {
 export async function fetchWakaSummaries(range = 'last_7_days') {
   return wakaFetch(`/users/current/summaries?range=${range}`);
 }
-
-// Spotify API
-export async function getSpotifyAccessToken(refreshToken, clientId, clientSecret) {
-  const res = await fetch('https://accounts.spotify.com/api/token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: 'Basic ' + btoa(`${clientId}:${clientSecret}`),
-    },
-    body: new URLSearchParams({
-      grant_type: 'refresh_token',
-      refresh_token: refreshToken,
-    }),
-  });
-  if (!res.ok) throw new Error('Spotify auth error');
-  return res.json();
-}

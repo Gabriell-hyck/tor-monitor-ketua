@@ -6,7 +6,6 @@ import StatsRow from '../components/profile/StatsRow';
 import ContributionGraph from '../components/profile/ContributionGraph';
 import TechStackRadar from '../components/profile/TechStackRadar';
 import Achievements from '../components/profile/Achievements';
-import SpotifySection from '../components/profile/SpotifySection';
 import CodingDiary from '../components/profile/CodingDiary';
 
 export default function ProfilePage() {
@@ -29,7 +28,6 @@ export default function ProfilePage() {
       <StatsRow user={user} totalStars={totalStars} totalForks={totalForks} />
       <ContributionGraph />
       <TechStackRadar />
-      <SpotifySection />
       <Achievements user={user} totalStars={totalStars} />
       <CodingDiary />
     </motion.div>
