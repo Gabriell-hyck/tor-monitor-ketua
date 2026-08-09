@@ -1,7 +1,7 @@
 const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
 const WAKATIME_KEY = import.meta.env.VITE_WAKATIME_KEY;
 
-// ---------------- GITHUB REST ----------------
+// GitHub REST API
 export async function fetchUser(username) {
   const res = await fetch(`https://api.github.com/users/${username}`, {
     headers: { Authorization: `Bearer ${GITHUB_TOKEN}` }
@@ -11,14 +11,22 @@ export async function fetchUser(username) {
 }
 
 export async function fetchRepos(username) {
-  const res = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=20`, {
+  const res = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=50`, {
     headers: { Authorization: `Bearer ${GITHUB_TOKEN}` }
   });
   if (!res.ok) throw new Error(`GitHub repos fetch failed: ${res.status}`);
   return res.json();
 }
 
-// ---------------- GITHUB GRAPHQL (contributions) ----------------
+export async function fetchUserEvents(username) {
+  const res = await fetch(`https://api.github.com/users/${username}/events/public?per_page=100`, {
+    headers: { Authorization: `Bearer ${GITHUB_TOKEN}` }
+  });
+  if (!res.ok) throw new Error(`GitHub Events error: ${res.status}`);
+  return res.json();
+}
+
+// GitHub GraphQL API
 export async function fetchGitHubGraphQL(query, variables = {}) {
   const res = await fetch('https://api.github.com/graphql', {
     method: 'POST',
@@ -54,7 +62,7 @@ export async function fetchContributions(username) {
   return data.user.contributionsCollection.contributionCalendar;
 }
 
-// ---------------- WAKATIME REST ----------------
+// WakaTime API
 async function wakaFetch(endpoint) {
   const res = await fetch(`https://wakatime.com/api/v1${endpoint}`, {
     headers: { Authorization: `Basic ${btoa(WAKATIME_KEY)}` }
@@ -70,4 +78,21 @@ export async function fetchWakaStats(range = 'last_7_days') {
 
 export async function fetchWakaSummaries(range = 'last_7_days') {
   return wakaFetch(`/users/current/summaries?range=${range}`);
+}
+
+// Spotify API
+export async function getSpotifyAccessToken(refreshToken, clientId, clientSecret) {
+  const res = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: 'Basic ' + btoa(`${clientId}:${clientSecret}`),
+    },
+    body: new URLSearchParams({
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
+    }),
+  });
+  if (!res.ok) throw new Error('Spotify auth error');
+  return res.json();
 }

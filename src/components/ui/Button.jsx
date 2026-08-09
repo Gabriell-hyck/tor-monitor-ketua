@@ -1,12 +1,9 @@
 import { motion } from 'framer-motion';
 
 const variants = {
-  primary:
-    'bg-primary text-accent hover:bg-primary/80 active:bg-primary/70',
-  secondary:
-    'bg-secondary text-white hover:bg-secondary/90',
-  ghost:
-    'bg-transparent text-soft hover:bg-gray-100',
+  primary: 'bg-primary text-accent hover:bg-primary/80 active:bg-primary/70',
+  secondary: 'bg-secondary text-white hover:bg-secondary/90',
+  ghost: 'bg-transparent text-soft hover:bg-gray-100 dark:hover:bg-gray-700',
 };
 
 const sizes = {
@@ -15,22 +12,11 @@ const sizes = {
   lg: 'px-6 py-2.5 text-base',
 };
 
-export default function Button({
-  children,
-  variant = 'primary',
-  size = 'md',
-  className = '',
-  ...props
-}) {
+export default function Button({ children, variant = 'primary', size = 'md', className = '', ...props }) {
   return (
     <motion.button
       whileTap={{ scale: 0.97 }}
-      className={`
-        inline-flex items-center justify-center font-medium rounded-xl transition-colors
-        ${variants[variant]}
-        ${sizes[size]}
-        ${className}
-      `}
+      className={`inline-flex items-center justify-center font-medium rounded-xl transition-colors ${variants[variant]} ${sizes[size]} ${className}`}
       {...props}
     >
       {children}

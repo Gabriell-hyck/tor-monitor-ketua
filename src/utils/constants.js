@@ -23,5 +23,9 @@ export const languageColors = {
   Python: '#3572A5',
   HTML: '#e34c26',
   CSS: '#563d7c',
-  // tambahkan sesuai kebutuhan
+  Java: '#b07219',
+  Ruby: '#701516',
+  Go: '#00ADD8',
+  Rust: '#dea584',
+  PHP: '#4F5D95',
 };

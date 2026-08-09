@@ -6,7 +6,7 @@ export default function Card({ children, className = '', ...props }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={`bg-white rounded-2xl shadow-card p-6 ${className}`}
+      className={`bg-white dark:bg-gray-800 rounded-2xl shadow-card p-6 ${className}`}
       {...props}
     >
       {children}

@@ -27,7 +27,7 @@ export default function SplashScreen({ onFinish }) {
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 bg-background flex flex-col items-center justify-center z-50"
+        className="fixed inset-0 bg-background dark:bg-gray-900 flex flex-col items-center justify-center z-50"
         exit={{ opacity: 0 }}
       >
         <motion.div
@@ -35,9 +35,11 @@ export default function SplashScreen({ onFinish }) {
           animate={{ opacity: 1, y: 0 }}
           className="text-center max-w-md px-6"
         >
-          <p className="text-xl font-medium text-dark italic mb-2">"{quote.text}"</p>
+          <p className="text-xl font-medium text-dark dark:text-white italic mb-2">
+            &ldquo;{quote.text}&rdquo;
+          </p>
           <p className="text-soft mb-8">— {quote.author}</p>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
             <motion.div
               className="bg-accent h-2 rounded-full"
               initial={{ width: 0 }}

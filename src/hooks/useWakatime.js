@@ -26,7 +26,6 @@ export function useWakaTime(range = 'last_7_days') {
         setLoading(false);
       })
       .catch(err => {
-        console.error(err);
         setError(err.message);
         setLoading(false);
       });

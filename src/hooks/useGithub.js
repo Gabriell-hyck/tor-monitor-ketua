@@ -13,9 +13,9 @@ export function useGitHub(username) {
     setLoading(true);
     setError(null);
     Promise.all([
-      fetchUser(username).catch(err => { throw err; }),
-      fetchRepos(username).catch(err => { throw err; }),
-      fetchContributions(username).catch(err => { throw err; }),
+      fetchUser(username),
+      fetchRepos(username),
+      fetchContributions(username),
     ])
       .then(([userData, reposData, contribData]) => {
         setUser(userData);
@@ -24,7 +24,6 @@ export function useGitHub(username) {
         setLoading(false);
       })
       .catch(err => {
-        console.error(err);
         setError(err.message);
         setLoading(false);
       });

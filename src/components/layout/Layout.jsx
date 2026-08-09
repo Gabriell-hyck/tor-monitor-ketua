@@ -1,20 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';
+import Header from './Header';
 import BottomNav from './BottomNav';
-import { Menu } from 'lucide-react';
 
 export default function Layout() {
-  const [collapsed, setCollapsed] = useState(window.innerWidth < 1024);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setSidebarCollapsed(window.innerWidth < 1024);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
-    <div className="flex h-screen">
-      <Sidebar collapsed={collapsed} />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="md:hidden flex items-center gap-4 p-4 bg-white/80 backdrop-blur-md border-b border-gray-100">
-          <button onClick={() => setCollapsed(!collapsed)}><Menu size={22} /></button>
-          <span className="font-semibold text-dark">DevDash</span>
-        </header>
+    <div className="flex h-screen overflow-hidden bg-background dark:bg-gray-900">
+      <Sidebar collapsed={sidebarCollapsed} />
+      <div className="flex-1 flex flex-col min-w-0">
+        <Header />
         <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-20 md:pb-8">
           <Outlet />
         </main>

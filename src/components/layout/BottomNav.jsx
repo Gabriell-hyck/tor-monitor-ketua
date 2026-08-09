@@ -11,7 +11,7 @@ const links = [
 
 export default function BottomNav() {
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-gray-100 px-4 py-2 flex justify-around z-50">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border-t border-gray-100 dark:border-gray-700 px-4 py-2 flex justify-around z-50">
       {links.map(({ to, icon: Icon }) => (
         <NavLink
           key={to}

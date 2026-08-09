@@ -6,10 +6,9 @@ import { formatNumber } from '../../utils/helpers';
 export default function GitHubStats() {
   const { user, contributions, loading, error } = useGitHubContext();
 
-  if (loading) return <Card><p>Loading...</p></Card>;
+  if (loading) return <Card><div className="h-24 bg-gray-100 dark:bg-gray-700 rounded animate-pulse" /></Card>;
   if (error) return <Card><p className="text-red-500">Error: {error}</p></Card>;
 
-  // transform contribution data untuk ActivityCalendar
   const calendarData = contributions?.weeks
     ?.flatMap(week => week.contributionDays)
     .map(day => ({
@@ -22,28 +21,25 @@ export default function GitHubStats() {
     <div className="grid gap-4">
       <Card>
         <div className="flex items-center gap-4">
-          <img src={user.avatar_url} className="w-14 h-14 rounded-full" />
+          <img src={user.avatar_url} className="w-14 h-14 rounded-full" alt={user.login} />
           <div>
-            <h2 className="font-semibold text-lg">{user.name || user.login}</h2>
+            <h2 className="font-semibold text-lg dark:text-white">{user.name || user.login}</h2>
             <p className="text-soft text-sm">@{user.login}</p>
           </div>
         </div>
-        <div className="flex gap-6 mt-4 text-sm">
+        <div className="flex gap-6 mt-4 text-sm dark:text-white">
           <div><span className="font-semibold">{formatNumber(user.followers)}</span> followers</div>
           <div><span className="font-semibold">{formatNumber(user.public_repos)}</span> repos</div>
           <div><span className="font-semibold">{contributions?.totalContributions ?? 0}</span> contributions</div>
         </div>
       </Card>
-
       {calendarData.length > 0 && (
         <Card>
-          <h3 className="font-medium mb-3">Contributions</h3>
+          <h3 className="font-medium mb-3 dark:text-white">Contributions</h3>
           <ActivityCalendar
             data={calendarData}
             colorScheme="light"
-            theme={{
-              light: ['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39'],
-            }}
+            theme={{ light: ['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39'] }}
             labels={{ totalCount: '{{count}} contributions in the last year' }}
           />
         </Card>
